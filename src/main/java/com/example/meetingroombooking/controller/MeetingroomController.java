@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
-@RequestMapping("/api/meetingrooms")
+@RequestMapping("/api")
 public class MeetingroomController {
 
     @Autowired
     private MeetingroomService meetingroomService;
 
-    @GetMapping("/all")
+    @GetMapping("/getAllMeetings")
     public List<MeetingroomEntity> getMeetingrooms() {
-        return meetingroomService.getMeetingrooms();
+        return meetingroomService.getAllMeetings();
     }
 }
