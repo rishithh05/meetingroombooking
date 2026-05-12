@@ -5,7 +5,9 @@ import org.springframework.web.bind.annotation.*;
 import com.example.meetingroombooking.service.MeetingroomService;
 import com.example.meetingroombooking.entity.MeetingroomEntity;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,9 +19,16 @@ public class MeetingroomController {
     private MeetingroomService meetingRoomService;
 
     @GetMapping("/getAllMeetings")
-    public List<MeetingroomEntity> getMeetingrooms() {
+    public Object getMeetingrooms() {
 
-        return meetingRoomService.getAllMeetings();
+        List<MeetingroomEntity> meetings = meetingRoomService.getAllMeetings();
+
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("totalMeetings", meetings.size());
+        response.put("meetings", meetings);
+
+        return response;
     }
 
     @GetMapping("/getMeetingById/{id}")
