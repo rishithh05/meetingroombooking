@@ -7,10 +7,10 @@ import java.util.List;
 
 public class MeetingRoomConstants {
 
-    public static final List<MeetingroomEntity> MEETING_ROOMS =
+    public  List<MeetingroomEntity> MEETING_ROOMS =
             new ArrayList<>();
 
-    static {
+     {
 
         MEETING_ROOMS.add(new MeetingroomEntity(
                 1L,
@@ -29,7 +29,7 @@ public class MeetingRoomConstants {
         ));
     }
 
-    private MeetingRoomConstants() {
+    public MeetingRoomConstants() {
     }
 }
 

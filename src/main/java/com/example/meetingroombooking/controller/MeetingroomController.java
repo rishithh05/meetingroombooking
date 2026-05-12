@@ -1,6 +1,7 @@
 package com.example.meetingroombooking.controller;
 
 import org.springframework.web.bind.annotation.*;
+
 import com.example.meetingroombooking.service.MeetingroomService;
 import com.example.meetingroombooking.entity.MeetingroomEntity;
 
@@ -20,6 +21,23 @@ public class MeetingroomController {
 
         return meetingRoomService.getAllMeetings();
     }
+
+    @GetMapping("/getMeetingById/{id}")
+    public Object getMeetingById(
+            @PathVariable String id
+    ) {
+
+        return meetingRoomService.getMeetingById(id);
+    }
+
+    @GetMapping("/getMeetingBySubject/{subject}")
+    public Object getMeetingBySubject(
+            @PathVariable String subject
+    ) {
+
+        return meetingRoomService.getMeetingBySubject(subject);
+    }
+
     @PostMapping("/CreateMeetings")
     public Object addMeeting(
             @RequestBody MeetingroomEntity meetingroom
@@ -30,15 +48,16 @@ public class MeetingroomController {
 
     @PutMapping("/{id}")
     public Object updateMeeting(
-            @PathVariable Long id,
+            @PathVariable String id,
             @RequestBody MeetingroomEntity meetingroom
     ) {
 
         return meetingRoomService.updateMeeting(id, meetingroom);
     }
+
     @PatchMapping("/{id}")
     public Object patchMeeting(
-            @PathVariable Long id,
+            @PathVariable String id,
             @RequestBody MeetingroomEntity meetingroom
     ) {
 
@@ -46,8 +65,8 @@ public class MeetingroomController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteMeeting(
-            @PathVariable Long id
+    public Object deleteMeeting(
+            @PathVariable String id
     ) {
 
         return meetingRoomService.deleteMeeting(id);
