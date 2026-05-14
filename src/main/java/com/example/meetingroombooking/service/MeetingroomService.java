@@ -14,8 +14,8 @@ public class MeetingroomService {
 
     @Autowired
     private MeetingroomRepository repository;
-
     // COMMON ID VALIDATION
+
     private Object validateMeetingId(String id) {
 
         if (id == null || id.isBlank()) {
@@ -35,10 +35,14 @@ public class MeetingroomService {
         return null;
     }
 
+    // GET ALL
+
     public List<MeetingroomEntity> getAllMeetings() {
 
-        return repository.findAll();
+        return repository.getAllMeetings();
     }
+
+    // GET BY ID
 
     public Object getMeetingById(String id) {
 
@@ -52,7 +56,7 @@ public class MeetingroomService {
         Long meetingId = Long.parseLong(id);
 
         Optional<MeetingroomEntity> meeting =
-                repository.findById(meetingId);
+                repository.getMeetingByIdNative(meetingId);
 
         if (meeting.isPresent()) {
 
@@ -62,34 +66,27 @@ public class MeetingroomService {
         return "Meeting not found with id : " + id;
     }
 
-    public Object getMeetingBySubject(String subject) {
+    // GET BY SUBJECT
+public Object getMeetingBySubject(String subject) {
 
-        if (subject == null || subject.isBlank()) {
+    if (subject == null || subject.isBlank()) {
 
-            return "Subject is required";
-        }
-
-        String formattedSubject =
-                subject.toLowerCase().replaceAll("\\s+", "");
-
-        List<MeetingroomEntity> meetings =
-                repository.findAll();
-
-        for (MeetingroomEntity meetingroom : meetings) {
-
-            String storedSubject =
-                    meetingroom.getSubject()
-                            .toLowerCase()
-                            .replaceAll("\\s+", "");
-
-            if (storedSubject.equals(formattedSubject)) {
-
-                return meetingroom;
-            }
-        }
-
-        return "Meeting not found with subject : " + subject;
+        return "Subject is required";
     }
+
+    List<MeetingroomEntity> meetings =
+            repository.getMeetingBySubjectNative(subject);
+
+    if (!meetings.isEmpty()) {
+
+        return meetings;
+    }
+
+    return "Meeting not found with subject : " + subject;
+}
+
+
+    // CREATE
 
     public Object addMeeting(MeetingroomEntity meetingroom) {
 
@@ -108,92 +105,98 @@ public class MeetingroomService {
         return repository.save(meetingroom);
     }
 
-    public Object patchMeeting(
-            String id,
-            MeetingroomEntity updatedMeeting) {
+    // PATCH
 
-        Object validation = validateMeetingId(id);
+   public Object patchMeeting(
+        String id,
+        MeetingroomEntity updatedMeeting) {
 
-        if (validation != null) {
+    Object validation = validateMeetingId(id);
 
-            return validation;
-        }
+    if (validation != null) {
 
-        Long meetingId = Long.parseLong(id);
-
-        Optional<MeetingroomEntity> optionalMeeting =
-                repository.findById(meetingId);
-
-        if (optionalMeeting.isEmpty()) {
-
-            return "Meeting not found with id : " + id;
-        }
-
-        MeetingroomEntity meetingroom =
-                optionalMeeting.get();
-
-        if (updatedMeeting.getSubject() != null &&
-                !updatedMeeting.getSubject().isBlank()) {
-
-            meetingroom.setSubject(
-                    updatedMeeting.getSubject());
-        }
-
-        if (updatedMeeting.getOrganizer() != null &&
-                !updatedMeeting.getOrganizer().isBlank()) {
-
-            meetingroom.setOrganizer(
-                    updatedMeeting.getOrganizer());
-        }
-
-        if (updatedMeeting.getStartTime() != null &&
-                !updatedMeeting.getStartTime().isBlank()) {
-
-            meetingroom.setStartTime(
-                    updatedMeeting.getStartTime());
-        }
-
-        if (updatedMeeting.getEndTime() != null &&
-                !updatedMeeting.getEndTime().isBlank()) {
-
-            meetingroom.setEndTime(
-                    updatedMeeting.getEndTime());
-        }
-
-        return repository.save(meetingroom);
+        return validation;
     }
+
+    Long meetingId = Long.parseLong(id);
+
+    Optional<MeetingroomEntity> optionalMeeting =
+            repository.findById(meetingId);
+
+    if (optionalMeeting.isEmpty()) {
+
+        return "Meeting not found with id : " + id;
+    }
+
+    MeetingroomEntity existingMeeting =
+            optionalMeeting.get();
+
+    String subject =
+            updatedMeeting.getSubject() != null
+                    ? updatedMeeting.getSubject()
+                    : existingMeeting.getSubject();
+
+    String organizer =
+            updatedMeeting.getOrganizer() != null
+                    ? updatedMeeting.getOrganizer()
+                    : existingMeeting.getOrganizer();
+
+    String startTime =
+            updatedMeeting.getStartTime() != null
+                    ? updatedMeeting.getStartTime()
+                    : existingMeeting.getStartTime();
+
+    String endTime =
+            updatedMeeting.getEndTime() != null
+                    ? updatedMeeting.getEndTime()
+                    : existingMeeting.getEndTime();
+
+    repository.updateMeetingNative(
+            meetingId,
+            subject,
+            organizer,
+            startTime,
+            endTime
+    );
+
+    return repository.findById(meetingId).get();
+}
+
+    // PUT
 
     public Object updateMeeting(
-            String id,
-            MeetingroomEntity updatedMeeting) {
+        String id,
+        MeetingroomEntity updatedMeeting) {
 
-        Object validation = validateMeetingId(id);
+    Object validation = validateMeetingId(id);
 
-        if (validation != null) {
+    if (validation != null) {
 
-            return validation;
-        }
-
-        Long meetingId = Long.parseLong(id);
-
-        Optional<MeetingroomEntity> optionalMeeting =
-                repository.findById(meetingId);
-
-        if (optionalMeeting.isEmpty()) {
-
-            return "Meeting not found with id : " + id;
-        }
-
-        MeetingroomEntity meetingroom =
-                optionalMeeting.get();
-
-        meetingroom.setSubject(updatedMeeting.getSubject());
-        meetingroom.setOrganizer(updatedMeeting.getOrganizer());
-        meetingroom.setStartTime(updatedMeeting.getStartTime());
-        meetingroom.setEndTime(updatedMeeting.getEndTime());
-
-        return repository.save(meetingroom);
+        return validation;
     }
+
+    Long meetingId = Long.parseLong(id);
+
+    Optional<MeetingroomEntity> optionalMeeting =
+            repository.findById(meetingId);
+
+    if (optionalMeeting.isEmpty()) {
+
+        return "Meeting not found with id : " + id;
+    }
+
+    repository.updateMeetingNative(
+            meetingId,
+            updatedMeeting.getSubject(),
+            updatedMeeting.getOrganizer(),
+            updatedMeeting.getStartTime(),
+            updatedMeeting.getEndTime()
+    );
+
+    return repository.findById(meetingId).get();
+}
+
+    // DELETE
 
     public Object deleteMeeting(String id) {
 
@@ -207,14 +210,14 @@ public class MeetingroomService {
         Long meetingId = Long.parseLong(id);
 
         Optional<MeetingroomEntity> optionalMeeting =
-                repository.findById(meetingId);
+                repository.getMeetingByIdNative(meetingId);
 
         if (optionalMeeting.isEmpty()) {
 
             return "Meeting not found with id : " + id;
         }
 
-        repository.deleteById(meetingId);
+        repository.deleteMeetingNative(meetingId);
 
         return "Meeting deleted successfully";
     }
