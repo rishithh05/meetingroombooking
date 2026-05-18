@@ -1,5 +1,6 @@
 package com.example.meetingroombooking.controller;
 
+import com.example.meetingroombooking.model.GenericResponse;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.meetingroombooking.model.Meetingroom;
@@ -22,38 +23,50 @@ public class MeetingroomController {
 
     // COMMON SUCCESS RESPONSE
 
-    private ResponseEntity<Object> successResponse(
-            Object data,
-            HttpStatus status
-    ) {
-
-        return ResponseEntity
-                .status(status)
-                .body(data);
-    }
-
-    // COMMON ERROR RESPONSE
-
-    private ResponseEntity<Object> errorResponse(
+    private <T> ResponseEntity<GenericResponse<T>>
+    successResponse(
+            T data,
             String message,
             HttpStatus status
     ) {
 
-        Map<String, Object> error =
-                new HashMap<>();
-
-        error.put("statusCode", status.value());
-        error.put("message", message);
+        GenericResponse<T> response =
+                new GenericResponse<>(
+                        status.value(),
+                        message,
+                        data
+                );
 
         return ResponseEntity
                 .status(status)
-                .body(error);
+                .body(response);
+    }
+
+    // COMMON ERROR RESPONSE
+
+    private ResponseEntity<GenericResponse<Object>>
+    errorResponse(
+            String message,
+            HttpStatus status
+    ) {
+
+        GenericResponse<Object> response =
+                new GenericResponse<>(
+                        status.value(),
+                        message,
+                        null
+                );
+
+        return ResponseEntity
+                .status(status)
+                .body(response);
     }
 
     // GET ALL
 
     @GetMapping("/getAllMeetings")
-    public ResponseEntity<Object> getMeetingrooms() {
+    public ResponseEntity<GenericResponse<Map<String, Object>>>
+    getMeetingrooms() {
 
         List<Meetingroom> meetings =
                 meetingRoomService.getAllMeetings();
@@ -66,6 +79,7 @@ public class MeetingroomController {
 
         return successResponse(
                 response,
+                "Meetings fetched successfully",
                 HttpStatus.OK
         );
     }
@@ -73,7 +87,8 @@ public class MeetingroomController {
     // GET BY ID
 
     @GetMapping("/getMeetingById/{id}")
-    public ResponseEntity<Object> getMeetingById(
+    public ResponseEntity<GenericResponse<Object>>
+    getMeetingById(
             @PathVariable String id
     ) {
 
@@ -90,6 +105,7 @@ public class MeetingroomController {
 
         return successResponse(
                 response,
+                "Meeting fetched successfully",
                 HttpStatus.OK
         );
     }
@@ -97,7 +113,8 @@ public class MeetingroomController {
     // GET BY SUBJECT
 
     @GetMapping("/getMeetingBySubject/{subject}")
-    public ResponseEntity<Object> getMeetingBySubject(
+    public ResponseEntity<GenericResponse<Object>>
+    getMeetingBySubject(
             @PathVariable String subject
     ) {
 
@@ -114,6 +131,7 @@ public class MeetingroomController {
 
         return successResponse(
                 response,
+                "Meeting fetched successfully",
                 HttpStatus.OK
         );
     }
@@ -121,7 +139,8 @@ public class MeetingroomController {
     // CREATE
 
     @PostMapping("/CreateMeetings")
-    public ResponseEntity<Object> addMeeting(
+    public ResponseEntity<GenericResponse<Object>>
+    addMeeting(
             @RequestBody Meetingroom meetingroom
     ) {
 
@@ -138,6 +157,7 @@ public class MeetingroomController {
 
         return successResponse(
                 response,
+                "Meeting created successfully",
                 HttpStatus.CREATED
         );
     }
@@ -145,7 +165,8 @@ public class MeetingroomController {
     // PUT
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateMeeting(
+    public ResponseEntity<GenericResponse<Object>>
+    updateMeeting(
             @PathVariable String id,
             @RequestBody Meetingroom meetingroom
     ) {
@@ -163,6 +184,7 @@ public class MeetingroomController {
 
         return successResponse(
                 response,
+                "Meeting updated successfully",
                 HttpStatus.OK
         );
     }
@@ -170,7 +192,8 @@ public class MeetingroomController {
     // PATCH
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Object> patchMeeting(
+    public ResponseEntity<GenericResponse<Object>>
+    patchMeeting(
             @PathVariable String id,
             @RequestBody Meetingroom meetingroom
     ) {
@@ -188,6 +211,7 @@ public class MeetingroomController {
 
         return successResponse(
                 response,
+                "Meeting patched successfully",
                 HttpStatus.OK
         );
     }
@@ -195,7 +219,8 @@ public class MeetingroomController {
     // DELETE
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteMeeting(
+    public ResponseEntity<GenericResponse<Object>>
+    deleteMeeting(
             @PathVariable String id
     ) {
 
@@ -212,6 +237,7 @@ public class MeetingroomController {
 
         return successResponse(
                 response,
+                "Meeting deleted successfully",
                 HttpStatus.OK
         );
     }
