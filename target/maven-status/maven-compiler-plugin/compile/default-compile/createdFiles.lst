@@ -1,0 +1,7 @@
+com\example\meetingroombooking\MeetingroombookingApplication.class
+com\example\meetingroombooking\model\Meetingroom.class
+com\example\meetingroombooking\service\MeetingroomService.class
+com\example\meetingroombooking\model\GenericResponse.class
+com\example\meetingroombooking\dto\Meetingroombooking.class
+com\example\meetingroombooking\mapper\MeetingroomMapper.class
+com\example\meetingroombooking\controller\MeetingroomController.class
