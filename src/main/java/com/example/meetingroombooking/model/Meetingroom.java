@@ -21,4 +21,5 @@ public class Meetingroom {
 
     private LocalDateTime endTime;
     private long duration;
+    private String Location
 }
