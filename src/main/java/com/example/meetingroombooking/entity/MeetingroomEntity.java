@@ -14,5 +14,6 @@ public class MeetingroomEntity {
     private String organizer;
     private String startTime;
     private String endTime;
-    private String Meetinglocation;
+    private String location;
+
 }
