@@ -14,6 +14,7 @@ public class MeetingroomEntity {
     private String organizer;
     private String startTime;
     private String endTime;
-    private String location;
+    private int location;
+    private double duration;
 
 }
